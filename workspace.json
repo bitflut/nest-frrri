@@ -1,8 +1,64 @@
 {
   "version": 1,
-  "projects": {},
+  "projects": {
+    "nest-integration": {
+      "root": "apps/nest-integration",
+      "sourceRoot": "apps/nest-integration/src",
+      "projectType": "application",
+      "prefix": "nest-integration",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/apps/nest-integration",
+            "main": "apps/nest-integration/src/main.ts",
+            "tsConfig": "apps/nest-integration/tsconfig.app.json",
+            "assets": ["apps/nest-integration/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/nest-integration/src/environments/environment.ts",
+                  "with": "apps/nest-integration/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "nest-integration:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/nest-integration/tsconfig.app.json",
+              "apps/nest-integration/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!apps/nest-integration/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/nest-integration/jest.config.js",
+            "tsConfig": "apps/nest-integration/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        }
+      }
+    }
+  },
   "cli": {
-    "defaultCollection": "@nrwl/workspace"
+    "defaultCollection": "@nrwl/nest"
   },
   "schematics": {
     "@nrwl/workspace": {
@@ -62,5 +118,6 @@
         "linter": "eslint"
       }
     }
-  }
+  },
+  "defaultProject": "nest-integration"
 }
