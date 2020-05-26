@@ -1,2 +1,2 @@
-export { JsonServerService, JsonServerServiceOptions } from './services/json-server.service';
+export { JsonServerCrudService } from './services/json-server.service';
 

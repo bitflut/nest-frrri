@@ -1,4 +1,4 @@
-import { IdType } from '@frrri/nest-crud/internal';
+import { IdType } from '@nest-frrri/crud/internal';
 import { Defferable } from './deferrable.interface';
 import { ParsedRequest } from './parsed-request.interface';
 

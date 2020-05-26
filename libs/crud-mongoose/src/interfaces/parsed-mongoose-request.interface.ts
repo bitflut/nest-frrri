@@ -1,4 +1,4 @@
-import { ParsedRequest } from '@frrri/nest-crud';
+import { ParsedRequest } from '@nest-frrri/crud';
 import { FilterQuery } from 'mongoose';
 
 interface RequestQuery {

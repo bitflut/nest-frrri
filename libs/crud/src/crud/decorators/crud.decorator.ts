@@ -1,4 +1,4 @@
-import { ClassType } from '@frrri/nest-crud/internal';
+import { ClassType } from '@nest-frrri/crud/internal';
 import { Body, Param, UseInterceptors } from '@nestjs/common';
 import { INTERCEPTORS_METADATA, METHOD_METADATA, PATH_METADATA } from '@nestjs/common/constants';
 import { pick } from 'lodash';

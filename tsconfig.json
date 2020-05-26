@@ -1,27 +1,45 @@
 {
-  "compileOnSave": false,
-  "compilerOptions": {
-    "rootDir": ".",
-    "sourceMap": true,
-    "declaration": false,
-    "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "importHelpers": true,
-    "target": "es2015",
-    "module": "esnext",
-    "typeRoots": ["node_modules/@types"],
-    "lib": ["es2017", "dom"],
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
-    "baseUrl": ".",
-    "paths": {
-      "@nest-frrri/crud": ["libs/nest-crud/src/public_api.ts"],
-      "@nest-frrri/crud/internal": ["libs/nest-crud/internal/src/public_api.ts"],
-      "@nest-frrri/crud/common": ["libs/nest-crud/common/src/public_api.ts"],
-      "@nest-frrri/crud-json-server": ["libs/nest-crud-json-server/src/public_api.ts"],
-      "@nest-frrri/crud-mongoose": ["libs/nest-crud-mongoose/src/public_api.ts"],
-    }
-  },
-  "exclude": ["node_modules", "tmp"]
+    "compileOnSave": false,
+    "compilerOptions": {
+        "rootDir": ".",
+        "sourceMap": true,
+        "declaration": false,
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "importHelpers": true,
+        "target": "es2015",
+        "module": "esnext",
+        "typeRoots": [
+            "node_modules/@types"
+        ],
+        "lib": [
+            "es2017",
+            "dom"
+        ],
+        "skipLibCheck": true,
+        "skipDefaultLibCheck": true,
+        "baseUrl": ".",
+        "paths": {
+            "@nest-frrri/crud": [
+                "libs/crud/src/public_api.ts"
+            ],
+            "@nest-frrri/crud/internal": [
+                "libs/crud/internal/src/public_api.ts"
+            ],
+            "@nest-frrri/crud/common": [
+                "libs/crud/common/src/public_api.ts"
+            ],
+            "@nest-frrri/crud-json-server": [
+                "libs/crud-json-server/src/public_api.ts"
+            ],
+            "@nest-frrri/crud-mongoose": [
+                "libs/crud-mongoose/src/public_api.ts"
+            ],
+        }
+    },
+    "exclude": [
+        "node_modules",
+        "tmp"
+    ]
 }

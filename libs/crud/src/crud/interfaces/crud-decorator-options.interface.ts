@@ -1,4 +1,4 @@
-import { ClassType } from '@frrri/nest-crud/internal';
+import { ClassType } from '@nest-frrri/crud/internal';
 import { Endpoint } from '../enums/endpoint.enum';
 import { EndpointOptions } from './endpoint-options.interface';
 

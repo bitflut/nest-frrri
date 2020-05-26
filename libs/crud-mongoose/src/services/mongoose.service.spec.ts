@@ -1,4 +1,4 @@
-import { Crud, CrudController } from '@frrri/nest-crud';
+import { Crud, CrudController } from '@nest-frrri/crud';
 import { Controller, Injectable } from '@nestjs/common';
 import { NestApplication } from '@nestjs/core';
 import { getModelToken, MongooseModule, MongooseModuleOptions, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
@@ -6,7 +6,7 @@ import { Test } from '@nestjs/testing';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { Document, Model } from 'mongoose';
 import * as supertest from 'supertest';
-import { MongooseService, MongooseServiceOptions } from './mongoose.service';
+import { MongooseCrudService } from './mongoose.service';
 
 @Schema()
 class User {
@@ -73,9 +73,8 @@ const postsDbData: Post[] = [
     },
 ];
 
-@MongooseServiceOptions({ modelToken: 'Post' })
 @Injectable()
-class PostsService extends MongooseService<Post & Document> { }
+class PostsService extends MongooseCrudService<Post & Document>('Post') { }
 
 @Crud()
 @Controller({ path: 'posts' })

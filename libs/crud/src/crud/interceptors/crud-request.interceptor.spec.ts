@@ -1,4 +1,4 @@
-import { IdType } from '@frrri/nest-crud/internal';
+import { IdType } from '@nest-frrri/crud/internal';
 import { Controller, HttpModule, ValidationPipe } from '@nestjs/common';
 import { NestApplication } from '@nestjs/core';
 import { Test } from '@nestjs/testing';

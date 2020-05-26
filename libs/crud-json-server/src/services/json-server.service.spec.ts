@@ -1,9 +1,9 @@
-import { Crud, CrudController, CrudDecoratorOptions, Endpoint } from '@frrri/nest-crud';
+import { Crud, CrudController, CrudDecoratorOptions, Endpoint } from '@nest-frrri/crud';
 import { Controller, HttpModule } from '@nestjs/common';
 import { NestApplication } from '@nestjs/core';
 import { Test } from '@nestjs/testing';
 import * as supertest from 'supertest';
-import { JsonServerService, JsonServerServiceOptions } from './json-server.service';
+import { JsonServerCrudService } from './json-server.service';
 
 interface Post {
     id: number;
@@ -22,8 +22,7 @@ describe('JsonServerService', () => {
         let $: supertest.SuperTest<supertest.Test>;
 
         beforeAll(async () => {
-            @JsonServerServiceOptions({ collection })
-            class PostsService extends JsonServerService<Post> { }
+            class PostsService extends JsonServerCrudService<Post>({ collection }) { }
 
             @Crud({ query, endpoints })
             @Controller({ path: 'posts' })
@@ -61,8 +60,7 @@ describe('JsonServerService', () => {
         let $: supertest.SuperTest<supertest.Test>;
 
         beforeAll(async () => {
-            @JsonServerServiceOptions({ collection })
-            class PostsService extends JsonServerService<Post> { }
+            class PostsService extends JsonServerCrudService<Post>({ collection }) { }
 
             @Crud({ query, endpoints })
             @Controller({ path: 'posts' })
