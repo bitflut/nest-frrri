@@ -55,6 +55,84 @@
           }
         }
       }
+    },
+    "crud": {
+      "root": "libs/crud",
+      "sourceRoot": "libs/crud/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/crud/tsconfig.lib.json",
+              "libs/crud/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/crud/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/crud/jest.config.js",
+            "tsConfig": "libs/crud/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "crud-json-server": {
+      "root": "libs/crud-json-server",
+      "sourceRoot": "libs/crud-json-server/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/crud-json-server/tsconfig.lib.json",
+              "libs/crud-json-server/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/crud-json-server/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/crud-json-server/jest.config.js",
+            "tsConfig": "libs/crud-json-server/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "crud-mongoose": {
+      "root": "libs/crud-mongoose",
+      "sourceRoot": "libs/crud-mongoose/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/crud-mongoose/tsconfig.lib.json",
+              "libs/crud-mongoose/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/crud-mongoose/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/crud-mongoose/jest.config.js",
+            "tsConfig": "libs/crud-mongoose/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {

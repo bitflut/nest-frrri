@@ -33,21 +33,22 @@
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
+    "@nestjs/schematics": "^6.7.0",
+    "@nestjs/testing": "^6.8.3",
+    "@nrwl/jest": "9.3.0",
     "@nrwl/nest": "^9.3.0",
+    "@nrwl/node": "9.3.0",
     "@nrwl/workspace": "9.3.0",
+    "@types/jest": "25.1.4",
     "@types/node": "~8.9.4",
     "dotenv": "6.2.0",
     "eslint": "6.8.0",
+    "jest": "25.2.3",
+    "ng-packagr": "^9.1.5",
     "prettier": "2.0.4",
+    "ts-jest": "25.2.1",
     "ts-node": "~7.0.0",
     "tslint": "~6.0.0",
-    "typescript": "~3.8.3",
-    "@nrwl/jest": "9.3.0",
-    "jest": "25.2.3",
-    "@types/jest": "25.1.4",
-    "ts-jest": "25.2.1",
-    "@nrwl/node": "9.3.0",
-    "@nestjs/schematics": "^6.7.0",
-    "@nestjs/testing": "^6.8.3"
+    "typescript": "~3.8.3"
   }
 }

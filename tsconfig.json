@@ -15,7 +15,13 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@nest-frrri/crud": ["libs/nest-crud/src/public_api.ts"],
+      "@nest-frrri/crud/internal": ["libs/nest-crud/internal/src/public_api.ts"],
+      "@nest-frrri/crud/common": ["libs/nest-crud/common/src/public_api.ts"],
+      "@nest-frrri/crud-json-server": ["libs/nest-crud-json-server/src/public_api.ts"],
+      "@nest-frrri/crud-mongoose": ["libs/nest-crud-mongoose/src/public_api.ts"],
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

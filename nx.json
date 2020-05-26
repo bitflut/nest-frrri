@@ -21,6 +21,15 @@
   "projects": {
     "nest-integration": {
       "tags": []
+    },
+    "crud": {
+      "tags": []
+    },
+    "crud-json-server": {
+      "tags": []
+    },
+    "crud-mongoose": {
+      "tags": []
     }
   }
 }

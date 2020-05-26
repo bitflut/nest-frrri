@@ -1,0 +1,36 @@
+{
+  "$schema": "../../node_modules/ng-packagr/package.schema.json",
+  "name": "@nest-frrri/crud",
+  "version": "0.0.1",
+  "license": "MIT",
+  "keywords": [
+    "nest",
+    "nestjs",
+    "nest-frrri",
+    "api",
+    "crud"
+  ],
+  "author": "marian@bitflut.com bitflut.com",
+  "homepage": "https://bitflut.gitbook.io/nest-frrri/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bitflut/nest-frrri"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^7.0.0",
+    "@nestjs/core": "^7.0.0",
+    "@nestjs/platform-express": "^7.0.0",
+    "reflect-metadata": "^0.1.13"
+  },
+  "ngPackage": {
+    "lib": {
+      "entryFile": "src/public_api.ts",
+      "umdModuleIds": {
+        "@nestjs/common": "@nestjs/common",
+        "@nestjs/common/constants": "@nestjs/common/constants",
+        "lodash": "lodash"
+      }
+    },
+    "dest": "../../dist/@nest-frrri-crud"
+  }
+}
