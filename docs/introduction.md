@@ -1,12 +1,8 @@
-<h1 align="center">
-    :racing_car: :racing_car: @nest-frrri :racing_car: :racing_car:<br>
-</h1>
+# Introduction
 
-<h3 align="center">Crud controllers at 250 km/h</h3>
+## 🏎️ 🏎️ @nest-frrri 🏎️ 🏎️
 
-<p align="center">
-    <img src="https://travis-ci.com/bitflut/nest-frrri.svg?branch=master" title="Build Status">
-</p>
+> Crud controllers at 250 km/h
 
 ## @nest-frrri/crud
 
