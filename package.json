@@ -14,7 +14,8 @@
     "affected:libs": "nx affected:libs",
     "affected:build": "nx affected:build",
     "affected:e2e": "nx affected:e2e",
-    "affected:test": "nx affected:test",
+    "affected:test": "run-p -r json-server affected:test:run",
+    "affected:test:run": "nx affected:test",
     "affected:lint": "nx affected:lint",
     "affected:dep-graph": "nx affected:dep-graph",
     "affected": "nx affected",
@@ -37,6 +38,7 @@
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
+    "@angular-devkit/build-angular": "^0.901.7",
     "@nestjs/schematics": "^7.0.0",
     "@nestjs/testing": "^7.0.0",
     "@nrwl/jest": "9.3.0",
@@ -53,6 +55,7 @@
     "mongodb-memory-server": "^6.6.1",
     "mongoose": "^5.9.16",
     "ng-packagr": "^9.1.5",
+    "npm-run-all": "^4.1.5",
     "prettier": "2.0.4",
     "supertest": "^4.0.2",
     "ts-jest": "25.2.1",
