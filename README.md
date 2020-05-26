@@ -5,7 +5,7 @@
 <h3 align="center">Crud controllers at 250 km/h</h3>
 
 <p align="center">
-    <img src="https://travis-ci.com/bitflut/ng-frrri.svg?branch=master" title="Build Status">
+    <img src="https://travis-ci.com/bitflut/nest-frrri.svg?branch=master" title="Build Status">
 </p>
 
 ## @nest-frrri/crud
