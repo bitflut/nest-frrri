@@ -20,15 +20,7 @@ We are working on the foundation of this library. If you want to take it for a t
 
 ### What it looks like:
 
-#### Basic example:
-
-```typescript
-@Crud()
-@Controller()
-class Ctrl { }
-```
-
-#### Mongoose example:
+#### @nest-frrri/crud-mongoose example:
 
 ```typescript
 class PostsService extends MongooseService<Post & Document>({ modelToken: 'Post' }) { }
