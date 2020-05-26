@@ -31,9 +31,11 @@ class PostsController implements CrudController<Post & Document> {
 ## Integrations
 
 See
-- @nest-frrri/crud-mongoose
-- @nest-frrri/crud-json-server
+
+* @nest-frrri/crud-mongoose
+* @nest-frrri/crud-json-server
 
 ## License
 
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
+
