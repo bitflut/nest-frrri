@@ -76,7 +76,7 @@ class PostsService implements CrudService<Post> {
         return this.data[id];
     }
 
-    patchOne(req: ParsedRequest, id: IdType, body: any) {
+    patchOne(req: ParsedRequest, id: IdType, originalBody: any, body: any) {
         return body;
     }
 

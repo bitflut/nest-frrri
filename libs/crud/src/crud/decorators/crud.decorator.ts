@@ -62,7 +62,6 @@ export function Crud(options: CrudDecoratorOptions = {}) {
     function configureRequest(config: EndpointConfig, target: ClassType) {
         Reflect.defineMetadata(PATH_METADATA, config.request.path, target.prototype[config.endpoint]);
         Reflect.defineMetadata(METHOD_METADATA, config.request.method, target.prototype[config.endpoint]);
-
         if (config.request.method === RequestMethod.PATCH) {
             const interceptors = Reflect.getMetadata(INTERCEPTORS_METADATA, target.prototype[config.endpoint]) || [];
             UseInterceptors(UnflattenBodyInterceptor, ...interceptors)(target.prototype[config.endpoint]);
@@ -75,7 +74,8 @@ export function Crud(options: CrudDecoratorOptions = {}) {
      * patchOne(
      *     \@ParsedRequest() req: any,
      *     \@Param('id') id: IdType,
-     *     \@OriginalBody() body: Dto,
+    * *    \@OriginalBody() body: any,
+     *     \@Body() body: Dto,
      * ) {}
      * ```
      */
@@ -96,10 +96,13 @@ export function Crud(options: CrudDecoratorOptions = {}) {
         if (isBodyRoute(config.endpoint)) {
             parameterIndex++;
 
-            isPatchRoute(config.endpoint)
-                ? OriginalBody()(target.prototype, config.endpoint, parameterIndex)
-                : Body()(target.prototype, config.endpoint, parameterIndex);
-
+            // Use original body (maybe flattened object).
+            if (isPatchRoute(config.endpoint)) {
+                OriginalBody()(target.prototype, config.endpoint, parameterIndex);
+                parameterIndex++;
+            }
+            // Always use Body decorator to start body validation.
+            Body()(target.prototype, config.endpoint, parameterIndex);
             if ('dto' in config) {
                 paramTypes[parameterIndex] = config.dto;
             }

@@ -38,7 +38,7 @@ export function MongooseCrudService<Entity extends Document = Document, Paginate
             );
         }
 
-        patchOne(req: ParsedMongooseRequest, id: string, data: any) {
+        patchOne(req: ParsedMongooseRequest, id: string, originalBody: any, body: any) {
 
             const conditions = {
                 ...req.query.conditions,
@@ -46,7 +46,7 @@ export function MongooseCrudService<Entity extends Document = Document, Paginate
             } as FilterQuery<any>;
 
             return this.query(
-                this.model.findOneAndUpdate(conditions, data, {
+                this.model.findOneAndUpdate(conditions, originalBody, {
                     new: true,
                     upsert: false,
                     runValidators: true,

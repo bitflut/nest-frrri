@@ -237,18 +237,28 @@ describe('MongooseService', () => {
         expect(posts.length).toEqual(1);
     });
 
-    it('should put', async () => {
-        const postToPut = { ...postsDbData[0] };
-        postToPut.body = 'we put the city';
+    it('should patch', async () => {
+        const postToPatch = { ...postsDbData[0] };
+        postToPatch.body = 'we put the city';
 
-        delete postToPut.title;
-        delete postToPut.tags;
-        postToPut['tags.0'] = 'flat';
+        delete postToPatch.title;
+        delete postToPatch.tags;
+        postToPatch['tags.0'] = 'flat';
 
-        const data = await $.patch(`/posts/${postToPut._id}`).send(postToPut).expect(200);
-        expect(data.body.body).toEqual(postToPut.body);
-        const post = await PostModel.findOne({ _id: postToPut._id });
+        const data = await $.patch(`/posts/${postToPatch._id}`).send(postToPatch).expect(200);
+        expect(data.body.body).toEqual(postToPatch.body);
+        const post = await PostModel.findOne({ _id: postToPatch._id });
         expect(data.body.body).toEqual(post.body);
+    });
+
+    it('should not patch', async () => {
+        const postToPatch = { ...postsDbData[0] };
+        postToPatch.body = 'we put the city';
+        delete postToPatch.title;
+        delete postToPatch.tags;
+        delete postToPatch.body;
+        postToPatch['tags.0'] = 'flat';
+        const data = await $.patch(`/posts/${postToPatch._id}`).send(postToPatch).expect(400);
     });
 
     afterEach(async () => {
