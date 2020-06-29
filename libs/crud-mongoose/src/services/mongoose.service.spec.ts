@@ -1,4 +1,4 @@
-import { Crud, CrudController } from '@nest-frrri/crud';
+import { Crud, CrudController, Endpoint } from '@nest-frrri/crud';
 import { Controller, Injectable, ValidationPipe } from '@nestjs/common';
 import { NestApplication } from '@nestjs/core';
 import { getModelToken, MongooseModule, MongooseModuleOptions, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
@@ -7,7 +7,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { Document, Model } from 'mongoose';
 import * as supertest from 'supertest';
 import { MongooseCrudService } from './mongoose.service';
-import { IsEmail, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsArray, ArrayMinSize, ArrayNotEmpty } from 'class-validator';
 
 abstract class Entity {
     _id: string;
@@ -36,9 +36,12 @@ class Post extends Entity {
 
     @Prop({ ref: 'User' })
     user: string;
+
+    @Prop()
+    tags: string[];
 }
 
-class PostDto {
+class PatchDto {
 
     @IsOptional()
     title: string;
@@ -48,6 +51,10 @@ class PostDto {
 
     @IsNotEmpty()
     user: string;
+
+    @IsArray()
+    @IsOptional()
+    tags: string[];
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);
@@ -71,18 +78,21 @@ const postsDbData: Post[] & { _id: string }[] = [
         _id: '5ec25a78737139f36b288f5a',
         title: 'sunt aut facere repellat provident occaecati excepturi optio reprehenderit',
         user: usersDbData[0]._id,
+        tags: ['tag'],
     },
     {
         body: 'est rerum tempore vitae sequi sint nihil reprehenderit dolor beatae ea dolores neque fugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis qui aperiam non debitis possimus qui neque nisi nulla',
         _id: '5ec25a6dd75a4cf337599503',
         title: 'qui est esse',
         user: usersDbData[0]._id,
+        tags: ['tag'],
     },
     {
         body: 'et iusto sed quo iure voluptatem occaecati omnis eligendi aut ad voluptatem doloribus vel accusantium quis pariatur molestiae porro eius odio et labore et velit aut',
         _id: '5ec25a78737139f36b288f5b',
         title: 'ea molestias quasi exercitationem repellat qui ipsa sit aut',
         user: usersDbData[1]._id,
+        tags: ['tag'],
     },
 ];
 
@@ -90,12 +100,27 @@ const postToCreateDto = {
     body: 'et iusto sed quo iure voluptatem occaecati omnis eligendi aut ad voluptatem doloribus vel accusantium quis pariatur molestiae porro eius odio et ',
     title: 'ea molestias quasi exercitationem repellat',
     user: usersDbData[1]._id,
+    tags: ['tag'],
 };
 
 @Injectable()
 class PostsService extends MongooseCrudService<Post & Document>('Post') { }
 
-@Crud({ dto: PostDto })
+@Crud({
+    endpoints: [
+        {
+            endpoint: Endpoint.PatchOne,
+            dto: PatchDto,
+        },
+        {
+            endpoint: Endpoint.PostOne, dto: PatchDto,
+        },
+        Endpoint.DeleteOne,
+        Endpoint.GetMany,
+        Endpoint.GetOne,
+        Endpoint.PutOne,
+    ],
+})
 @Controller({ path: 'posts' })
 class PostsController implements CrudController<Post & Document> {
     constructor(public service: PostsService) { }
@@ -215,13 +240,15 @@ describe('MongooseService', () => {
     it('should put', async () => {
         const postToPut = { ...postsDbData[0] };
         postToPut.body = 'we put the city';
+
         delete postToPut.title;
-        const data = await $.put(`/posts/${postToPut._id}`).send(postToPut).expect(200);
-        console.log(data.body);
+        delete postToPut.tags;
+        postToPut['tags.0'] = 'flat';
+
+        const data = await $.patch(`/posts/${postToPut._id}`).send(postToPut).expect(200);
         expect(data.body.body).toEqual(postToPut.body);
         const post = await PostModel.findOne({ _id: postToPut._id });
         expect(data.body.body).toEqual(post.body);
-        console.log(post);
     });
 
     // it('should not put', async () => {

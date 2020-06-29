@@ -38,13 +38,20 @@ export function MongooseCrudService<Entity extends Document = Document, Paginate
             );
         }
 
-        patchOne(req: ParsedMongooseRequest, id: string) {
+        patchOne(req: ParsedMongooseRequest, id: string, data: any) {
 
             const conditions = {
                 ...req.query.conditions,
                 _id: id,
             } as FilterQuery<any>;
 
+            return this.query(
+                this.model.findOneAndUpdate(conditions, data, {
+                    new: true,
+                    upsert: false,
+                    runValidators: true,
+                    omitUndefined: true,
+                }), req);
         }
 
         putOne(req: ParsedMongooseRequest, id: string, data: any) {

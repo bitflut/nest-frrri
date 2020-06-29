@@ -1,5 +1,5 @@
 import { ClassType } from '@nest-frrri/crud/internal';
-import { Body, Param, UseInterceptors } from '@nestjs/common';
+import { Body, Param, UseInterceptors, RequestMethod } from '@nestjs/common';
 import { INTERCEPTORS_METADATA, METHOD_METADATA, PATH_METADATA } from '@nestjs/common/constants';
 import { pick } from 'lodash';
 import { Endpoint } from '../enums/endpoint.enum';
@@ -8,6 +8,8 @@ import { CrudDecoratorOptions } from '../interfaces/crud-decorator-options.inter
 import { EndpointConfig } from '../interfaces/endpoint-config.interface';
 import { endpointDefinitions } from './endpoint-definitions';
 import { ParsedRequest } from './parsed-request.decorator';
+import { OriginalBody } from './original-body.decorator';
+import { UnflattenBodyInterceptor } from '../interceptors/unflatten-body.interceptor';
 
 function isIdRoute(endpoint: Endpoint) {
     return ![Endpoint.GetMany, Endpoint.PostOne].includes(endpoint);
@@ -15,6 +17,10 @@ function isIdRoute(endpoint: Endpoint) {
 
 function isBodyRoute(endpoint: Endpoint) {
     return [Endpoint.PatchOne, Endpoint.PostOne, Endpoint.PutOne].includes(endpoint);
+}
+
+function isPatchRoute(endpoint: Endpoint) {
+    return [Endpoint.PatchOne].includes(endpoint);
 }
 
 export function Crud(options: CrudDecoratorOptions = {}) {
@@ -33,7 +39,7 @@ export function Crud(options: CrudDecoratorOptions = {}) {
             prev[endpoint] = {
                 endpoint,
                 ...endpointDefinitions[endpoint],
-                ...pick(options, 'query', 'idType', 'dto'),
+                ...pick(options, 'query', 'idType', 'dto', 'originalDto'),
                 ...typeof curr === 'object' ? curr : {},
             };
             return prev;
@@ -56,6 +62,11 @@ export function Crud(options: CrudDecoratorOptions = {}) {
     function configureRequest(config: EndpointConfig, target: ClassType) {
         Reflect.defineMetadata(PATH_METADATA, config.request.path, target.prototype[config.endpoint]);
         Reflect.defineMetadata(METHOD_METADATA, config.request.method, target.prototype[config.endpoint]);
+
+        if (config.request.method === RequestMethod.PATCH) {
+            const interceptors = Reflect.getMetadata(INTERCEPTORS_METADATA, target.prototype[config.endpoint]) || [];
+            UseInterceptors(UnflattenBodyInterceptor, ...interceptors)(target.prototype[config.endpoint]);
+        }
     }
 
     /**
@@ -64,7 +75,7 @@ export function Crud(options: CrudDecoratorOptions = {}) {
      * patchOne(
      *     \@ParsedRequest() req: any,
      *     \@Param('id') id: IdType,
-     *     \@Body() body: Dto,
+     *     \@OriginalBody() body: Dto,
      * ) {}
      * ```
      */
@@ -84,7 +95,10 @@ export function Crud(options: CrudDecoratorOptions = {}) {
 
         if (isBodyRoute(config.endpoint)) {
             parameterIndex++;
-            Body()(target.prototype, config.endpoint, parameterIndex);
+
+            isPatchRoute(config.endpoint)
+                ? OriginalBody()(target.prototype, config.endpoint, parameterIndex)
+                : Body()(target.prototype, config.endpoint, parameterIndex);
 
             if ('dto' in config) {
                 paramTypes[parameterIndex] = config.dto;
