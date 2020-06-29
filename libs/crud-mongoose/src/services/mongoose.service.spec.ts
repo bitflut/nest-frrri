@@ -7,7 +7,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { Document, Model } from 'mongoose';
 import * as supertest from 'supertest';
 import { MongooseCrudService } from './mongoose.service';
-import { IsEmail, IsNotEmpty, IsOptional, IsArray, ArrayMinSize, ArrayNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsArray } from 'class-validator';
 
 abstract class Entity {
     _id: string;
