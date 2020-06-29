@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit, BadRequestException, NotAcceptableException } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { getModelToken } from '@nestjs/mongoose';
 import { Document, DocumentQuery, FilterQuery, Model } from 'mongoose';
@@ -38,53 +38,50 @@ export function MongooseCrudService<Entity extends Document = Document, Paginate
             );
         }
 
-        patchOne(req: ParsedMongooseRequest, id: string) {
-            // TODO: Implementation
+        patchOne(req: ParsedMongooseRequest, id: string, originalBody: any, body: any) {
+
             const conditions = {
                 ...req.query.conditions,
                 _id: id,
             } as FilterQuery<any>;
 
             return this.query(
-                this.model.findOne(conditions),
-                req,
-            );
+                this.model.findOneAndUpdate(conditions, originalBody, {
+                    new: true,
+                    upsert: false,
+                    runValidators: true,
+                    omitUndefined: true,
+                }), req);
         }
 
         putOne(req: ParsedMongooseRequest, id: string, data: any) {
-            // TODO: Implementation
+
             const conditions = {
                 ...req.query.conditions,
                 _id: id,
             } as FilterQuery<any>;
 
             return this.query(
-                this.model.findOne(conditions),
-                req,
-            );
+                this.model.findOneAndUpdate(conditions, data, {
+                    new: true,
+                    upsert: false,
+                    runValidators: true,
+                    omitUndefined: true,
+                }), req);
         }
 
         postOne(req: ParsedMongooseRequest, data: any) {
-            // TODO: Implementation
-            const conditions = {
-                ...req.query.conditions,
-            } as FilterQuery<any>;
-
-            return this.query(
-                this.model.findOne(conditions),
-                req,
-            );
+            return this.model.create(data);
         }
 
         deleteOne(req: ParsedMongooseRequest, id: string) {
-            // TODO: Implementation
             const conditions = {
                 ...req.query.conditions,
                 _id: id,
             } as FilterQuery<any>;
 
             return this.query(
-                this.model.findOne(conditions),
+                this.model.deleteOne(conditions),
                 req,
             ).pipe(mapTo(undefined));
         }

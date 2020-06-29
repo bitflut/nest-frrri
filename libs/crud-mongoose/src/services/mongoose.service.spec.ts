@@ -1,5 +1,5 @@
-import { Crud, CrudController } from '@nest-frrri/crud';
-import { Controller, Injectable } from '@nestjs/common';
+import { Crud, CrudController, Endpoint } from '@nest-frrri/crud';
+import { Controller, Injectable, ValidationPipe } from '@nestjs/common';
 import { NestApplication } from '@nestjs/core';
 import { getModelToken, MongooseModule, MongooseModuleOptions, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Test } from '@nestjs/testing';
@@ -7,11 +7,14 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { Document, Model } from 'mongoose';
 import * as supertest from 'supertest';
 import { MongooseCrudService } from './mongoose.service';
+import { IsNotEmpty, IsOptional, IsArray } from 'class-validator';
+
+abstract class Entity {
+    _id: string;
+}
 
 @Schema()
-class User {
-    @Prop()
-    _id: string;
+class User extends Entity {
 
     @Prop()
     name: string;
@@ -23,9 +26,7 @@ class User {
 export const UserSchema = SchemaFactory.createForClass(User);
 
 @Schema()
-class Post {
-    @Prop()
-    _id: string;
+class Post extends Entity {
 
     @Prop()
     title: string;
@@ -35,11 +36,30 @@ class Post {
 
     @Prop({ ref: 'User' })
     user: string;
+
+    @Prop()
+    tags: string[];
+}
+
+class PatchDto {
+
+    @IsOptional()
+    title: string;
+
+    @IsNotEmpty()
+    body: string;
+
+    @IsNotEmpty()
+    user: string;
+
+    @IsArray()
+    @IsOptional()
+    tags: string[];
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);
 
-const usersDbData: User[] = [
+const usersDbData: User[] & { _id: string }[] = [
     {
         _id: '5ec25a6dd75a4cf3375994ff',
         name: 'Marian',
@@ -52,31 +72,55 @@ const usersDbData: User[] = [
     },
 ];
 
-const postsDbData: Post[] = [
+const postsDbData: Post[] & { _id: string }[] = [
     {
         body: 'quia et suscipit suscipit recusandae consequuntur expedita et cum reprehenderit molestiae ut ut quas totam nostrum rerum est autem sunt rem eveniet architecto',
         _id: '5ec25a78737139f36b288f5a',
         title: 'sunt aut facere repellat provident occaecati excepturi optio reprehenderit',
         user: usersDbData[0]._id,
+        tags: ['tag'],
     },
     {
         body: 'est rerum tempore vitae sequi sint nihil reprehenderit dolor beatae ea dolores neque fugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis qui aperiam non debitis possimus qui neque nisi nulla',
         _id: '5ec25a6dd75a4cf337599503',
         title: 'qui est esse',
         user: usersDbData[0]._id,
+        tags: ['tag'],
     },
     {
         body: 'et iusto sed quo iure voluptatem occaecati omnis eligendi aut ad voluptatem doloribus vel accusantium quis pariatur molestiae porro eius odio et labore et velit aut',
         _id: '5ec25a78737139f36b288f5b',
         title: 'ea molestias quasi exercitationem repellat qui ipsa sit aut',
         user: usersDbData[1]._id,
+        tags: ['tag'],
     },
 ];
+
+const postToCreateDto = {
+    body: 'et iusto sed quo iure voluptatem occaecati omnis eligendi aut ad voluptatem doloribus vel accusantium quis pariatur molestiae porro eius odio et ',
+    title: 'ea molestias quasi exercitationem repellat',
+    user: usersDbData[1]._id,
+    tags: ['tag'],
+};
 
 @Injectable()
 class PostsService extends MongooseCrudService<Post & Document>('Post') { }
 
-@Crud()
+@Crud({
+    endpoints: [
+        {
+            endpoint: Endpoint.PatchOne,
+            dto: PatchDto,
+        },
+        {
+            endpoint: Endpoint.PostOne, dto: PatchDto,
+        },
+        Endpoint.DeleteOne,
+        Endpoint.GetMany,
+        Endpoint.GetOne,
+        Endpoint.PutOne,
+    ],
+})
 @Controller({ path: 'posts' })
 class PostsController implements CrudController<Post & Document> {
     constructor(public service: PostsService) { }
@@ -113,6 +157,7 @@ describe('MongooseService', () => {
         }).compile();
 
         app = moduleRef.createNestApplication();
+        app.useGlobalPipes(new ValidationPipe());
         await app.init();
         $ = supertest(app.getHttpServer());
 
@@ -158,6 +203,62 @@ describe('MongooseService', () => {
         expect(res.body[0]._id).toEqual(postsDbData[2]._id);
         expect(res.body[0].title).toEqual(postsDbData[2].title);
         expect(res.body[0].body).toBeUndefined();
+    });
+
+    it('should delete', async () => {
+        let post = await PostModel.findOne({ _id: postsDbData[1]._id });
+        expect(post).toBeDefined();
+        const res = await $.delete(`/posts/${postsDbData[1]._id}`).expect(200);
+        expect(res.body).toEqual({});
+        post = await PostModel.findOne({ _id: postsDbData[1]._id });
+        expect(post).toBeNull();
+    });
+
+    it('should delete non existing', async () => {
+        const imaginaryId = '5ec25a78737139f36b288f52';
+        const post = await PostModel.findOne({ _id: imaginaryId });
+        expect(post).toBeNull();
+        const res1 = await $.delete(`/posts/${imaginaryId}`).expect(200);
+    });
+
+    it('should create', async () => {
+        let posts = await PostModel.find({ user: usersDbData[1]._id });
+        expect(posts.length).toEqual(1);
+        await $.post('/posts').send(postToCreateDto).expect(201);
+        posts = await PostModel.find({ user: usersDbData[1]._id });
+        expect(posts.length).toEqual(2);
+    });
+
+    it('should not create', async () => {
+        let posts = await PostModel.find({ user: usersDbData[1]._id });
+        expect(posts.length).toEqual(1);
+        await $.post('/posts').send({}).expect(400);
+        posts = await PostModel.find({ user: usersDbData[1]._id });
+        expect(posts.length).toEqual(1);
+    });
+
+    it('should patch', async () => {
+        const postToPatch = { ...postsDbData[0] };
+        postToPatch.body = 'we put the city';
+
+        delete postToPatch.title;
+        delete postToPatch.tags;
+        postToPatch['tags.0'] = 'flat';
+
+        const data = await $.patch(`/posts/${postToPatch._id}`).send(postToPatch).expect(200);
+        expect(data.body.body).toEqual(postToPatch.body);
+        const post = await PostModel.findOne({ _id: postToPatch._id });
+        expect(data.body.body).toEqual(post.body);
+    });
+
+    it('should not patch', async () => {
+        const postToPatch = { ...postsDbData[0] };
+        postToPatch.body = 'we put the city';
+        delete postToPatch.title;
+        delete postToPatch.tags;
+        delete postToPatch.body;
+        postToPatch['tags.0'] = 'flat';
+        const data = await $.patch(`/posts/${postToPatch._id}`).send(postToPatch).expect(400);
     });
 
     afterEach(async () => {
