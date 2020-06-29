@@ -251,13 +251,6 @@ describe('MongooseService', () => {
         expect(data.body.body).toEqual(post.body);
     });
 
-    // it('should not put', async () => {
-    //     const data = await $.put(`/posts/${postsDbData[0]._id}`).send(postToCreateDto).expect(200);
-    //     // expect(data.body.title).toEqual(postToPut.title);
-    //     // const post = await PostModel.findOne({ _id: postToPut._id });
-    //     // expect(data.body.title).toEqual(post.title);
-    // });
-
     afterEach(async () => {
         await mongod.stop();
         await app.close();
