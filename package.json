@@ -54,7 +54,7 @@
     "json-server": "^0.16.1",
     "mongodb-memory-server": "^6.6.1",
     "mongoose": "^5.9.16",
-    "ng-packagr": "^9.1.5",
+    "ng-packagr": "^10.1.1",
     "npm-run-all": "^4.1.5",
     "prettier": "2.0.4",
     "supertest": "^4.0.2",
